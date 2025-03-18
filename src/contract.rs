@@ -11,6 +11,7 @@ use soroban_sdk::token::{self, Interface as _};
 use soroban_sdk::{contract, contractimpl, Address, Env, String};
 use soroban_token_sdk::metadata::TokenMetadata;
 use soroban_token_sdk::TokenUtils;
+
 fn check_nonnegative_amount(amount: i128) {
     if amount < 0 {
         panic!("negative amount is not allowed: {}", amount)
@@ -22,14 +23,10 @@ pub struct Token;
 
 #[contractimpl]
 impl Token {
-    pub fn __constructor(e: Env) {
-        // if decimal > 18 {
-        //     panic!("Decimal must not be greater than 18");
-        // }
-        let admin = Address::from_str(&e,"GDJM5C6PWLMVYLVVNXAMQGBE4B4RPWW42RRAXZGCQ5C274ZTORKSBDJN");
-        let decimal: u32 = 9;
-        let name = String::from_str(&e, "K3 Test");
-        let symbol = String::from_str(&e, "TEST");
+    pub fn __constructor(e: Env, admin: Address, decimal: u32, name: String, symbol: String) {
+        if decimal > 18 {
+            panic!("Decimal must not be greater than 18");
+        }
         write_administrator(&e, &admin);
         write_metadata(
             &e,
